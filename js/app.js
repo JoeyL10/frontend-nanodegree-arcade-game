@@ -1,16 +1,30 @@
-// I added these 2 array variables below.
 
 
-var allEnemies = [];
+
+var playerStartx = 200;
+var playerStarty = 400;
+var score = 0;
+var lives = 3;
+
+
+
+// Now instantiate your objects.
+// Place all enemy objects in an array called allEnemies
+// Place the player object in a variable called player
 
 
 
 
 // Enemies our player must avoid
 var Enemy = function(x, y) {
-    this.sprite = 'images/enemy-bug.png'; 
     this.x = x;
     this.y = y;
+    this.sprite = 'images/enemy-bug.png';
+    enemySpeeds = [200, 300, 400];
+    this.speed = enemySpeeds[(Math.floor(Math.random() * enemySpeeds.length))] + 100;
+    this.width = 25;
+    this.height = 25;
+    
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
     // The image/sprite for our enemies, this uses
@@ -23,56 +37,152 @@ var Enemy = function(x, y) {
 Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
-    // all computers.
+    // all computers.  
+         if (this.x < 505) {
+            this.x += this.speed*dt;
+          if (this.x > 505) {
+            this.x = - 100;
+          }      
+    }
+        
+}
 
-     
-};
+
+
 // Draw the enemy on the screen, required method for game
-Enemy.prototype.render = function() {
+Enemy.prototype.render = function(now) {
 
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y); 
     
 };
 
 
-var enemy = new Enemy(100,100);
-    enemy.render();
-   
+
+
+
+
 
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method. 
 
-var Player = function(x, y) {
-    this.sprite = 'images/char-boy.png';
-    this.x = x;
-    this.y = y;
+var allEnemies = [];
+
+ (function createEnemies() {
+    allEnemies.push(new Enemy(-100, 60));
+    allEnemies.push(new Enemy(-200, 140));
+    allEnemies.push(new Enemy(-150, 225));
+    allEnemies.push(new Enemy(-300, 60));
+
     
+}());
+
+
+var Player = function(x, y) {
+    this.x = playerStartx;
+    this.y = playerStarty;
+    this.sprite = 'images/char-boy.png';
+    this.width = 25;
+    this.height = 25;
+
 };
+
+ 
+
+
+Player.prototype.reset = function(x,y) {
+    this.x = playerStartx;
+    this.y = playerStarty;
+    
+    
+}
 
 Player.prototype.update = function(dt) {  
+    
+    if (this.y <= -1) {
+        checkCollisions();
+        this.reset();
+        score++;
+            if (score === 3) {
+                alert("You got 3 in a row! Congratulations!");
+                lives = 3;
+                score = 0;
+                this.reset();
+                }
+    }
+    if (lives === 0) {
+        alert("You lose! Try again!");
+        lives = 3;
+        score = 0;
+        this.reset();
 
+    }
+     
 };
+
+
+Player.prototype.handleInput = function(direction) {
+      if (direction === 'left' && this.x > 25) {
+        this.x -= 100;
+            }
+      if (direction === 'right' && this.x < 400) {
+        this.x += 100;
+    }
+      if (direction === 'up') {
+        this.y -= 80;
+    }
+      if (direction === 'down' && this.y < 400)  {
+        this.y += 80;
+    }
+}
 
 Player.prototype.render = function() {
-    
+    drawScore();
+    drawLives();
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    ctx.fillStyle = "white";
-      ctx.font = '33px serif';
+   
 
 };
 
-var player = new Player(10,10);
-player.render();
+
+
+var player = new Player(playerStartx,playerStarty);
+    
+
+
+ var checkCollisions = function() {
+        
+
+         for(var i = 0; i < allEnemies.length; i++) {
+            if (allEnemies[i].x < player.x + player.width &&
+                allEnemies[i].x + allEnemies[i].width > player.x &&
+                allEnemies[i].y < player.y + player.height &&
+                allEnemies[i].height + allEnemies[i].y > player.y) {
+                lives--;
+                score = 0;
+                player.reset(); 
+        }
+       
+    }
+   }
+
+
    
+function drawScore() {
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "#fff";
+    ctx.fillText("Score: " + score, 10, 70);
+}
+function drawLives() {
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "#fff";
+    ctx.fillText("Lives: " + lives, 415, 70);
+}
 
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
 
 
 
-// This listens for key presses and sends the keys to your
+// This listens for allowedKeys presses and sends the allowedKeyss to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
@@ -82,15 +192,12 @@ document.addEventListener('keyup', function(e) {
         40: 'down'
     };
 
-    // player.handleInput(allowedKeys[e.keyCode]);
+    player.handleInput(allowedKeys[e.keyCode]);
 });
 
 
-// Things I've changed on the file are below:
-// commented out the player.handleInput on line 52
-// add allEnemies and player variables on lines 4 and 5
-// commented out player.update(); on line 97 on engine.js
-// Added a player function on line 34
-// commented out player.render on line 154 in engine.js
+
+
+
 
 
