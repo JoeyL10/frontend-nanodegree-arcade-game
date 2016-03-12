@@ -51,7 +51,6 @@ Enemy.prototype.update = function(dt) {
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function(now) {
-
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y); 
     
 };
@@ -72,7 +71,7 @@ var allEnemies = [];
     allEnemies.push(new Enemy(-100, 60));
     allEnemies.push(new Enemy(-200, 140));
     allEnemies.push(new Enemy(-150, 225));
-    allEnemies.push(new Enemy(-300, 60));
+    allEnemies.push(new Enemy(-500, 225));
 
     
 }());
@@ -140,7 +139,6 @@ Player.prototype.render = function() {
     drawScore();
     drawLives();
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-   
 
 };
 
