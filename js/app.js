@@ -27,11 +27,10 @@ var Enemy = function(x, y) {
 // Parameter: dt, a time delta between ticks
 
 Enemy.prototype.update = function(dt) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers. 
+    
     //  When the bug reaches the width of the screen at 505 start it
-    // over again 100 pixels off the screen. 
+    // over again 100 pixels left of the canvas. It is multiplied by dt
+    // to normalize the speed across different computers
     if (this.x < 505) {
         this.x += this.speed * dt;
         if (this.x > 505) {
@@ -54,10 +53,11 @@ Enemy.prototype.render = function(now) {
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
 
 
 
+// I've created 4 enemies that start at different x coordinates
+// where 2 of them will always be on the bottom row 225 y coordinate
 
 var allEnemies = [];
 
@@ -87,12 +87,17 @@ var Player = function(x, y) {
 
 
 
+//  playerstart x and y coordinates were defined at top of app.js
+
 Player.prototype.reset = function(x, y) {
     this.x = playerStartx;
     this.y = playerStarty;
 
 
 };
+
+// My player update function has included counters for both score and lives
+// when necessary conditions are met.  Game is reset when lives = 0 or score = 3
 
 Player.prototype.update = function(dt) {
 
@@ -117,6 +122,13 @@ Player.prototype.update = function(dt) {
 
 };
 
+
+// Using console.log(this.x, this.y) I was able to define boundaries
+// and also add a condition for if the player touches the rock to stay put
+// and not move.  I added these for up, down and right and not left since
+// a player can never move left to the rock. I added the rock on the far right
+// side of the screen to make the game more challenging since bugs come from
+// the left side.
 
 Player.prototype.handleInput = function(direction) {
     if (direction === 'left' && this.x > 25) {
@@ -152,18 +164,19 @@ Player.prototype.handleInput = function(direction) {
 };
 
 
+// I based my render function on the enemy function but inserted the rock image
+// and my 2 new functions to keep track of score and player lives.
 
 Player.prototype.render = function() {
     drawScore();
     drawLives();
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     ctx.drawImage(Resources.get('images/rock.png'), 400, 140);
-
-
 };
 
 
 
+// Place the player object in a variable called player
 
 var player = new Player(playerStartx, playerStarty);
 
