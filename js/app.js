@@ -171,7 +171,7 @@ Player.prototype.render = function() {
     drawScore();
     drawLives();
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    ctx.drawImage(Resources.get('images/rock.png'), 400, 140);
+    ctx.drawImage(Resources.get('images/Rock.png'), 400, 140);
 };
 
 
