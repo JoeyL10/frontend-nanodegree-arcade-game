@@ -17,7 +17,7 @@ the html 5 canvas while having us build on code written by other people.
 Using the directional arrows on your keyboard, move the player across the canvas
 to the water at the top of the screen without getting hit by a bug.  If you make it to the water 3 times in a row you win but you only get 3 lives.
 
-To play the game click <a href="http://joeyl10.github.io/frontend-nanodegree-arcade-game/">Here</a>f
+To play the game click **<a href="http://joeyl10.github.io/frontend-nanodegree-arcade-game/">Here</a>**
 
 
 
