@@ -180,6 +180,25 @@ var Engine = (function(global) {
     Resources.onReady(init);
 
 
+   // Check to see if player collides into enemies and if so reduce player lives then reset score and game
+
+var checkCollisions = function() {
+
+
+    for (var i = 0; i < allEnemies.length; i++) {
+        if (allEnemies[i].x < player.x + player.width &&
+            allEnemies[i].x + allEnemies[i].width > player.x &&
+            allEnemies[i].y < player.y + player.height &&
+            allEnemies[i].height + allEnemies[i].y > player.y) {
+            lives--;
+            score = 0;
+            player.reset();
+        }
+
+    }
+};
+
+
     /* Assign the canvas' context object to the global variable (the window
      * object when run in a browser) so that developers can use it more easily
      * from within their app.js files.
