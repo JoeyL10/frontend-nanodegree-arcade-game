@@ -1,10 +1,54 @@
 
-
-
 var playerStartx = 200;
 var playerStarty = 400;
 var score = 0;
 var lives = 3;
+var randomSpeed = [200, 300, 400, 550];
+
+
+
+
+// Enemies our player must avoid
+var Enemy = function(x, y) {
+    this.x = x;
+    this.y = y;
+    this.sprite = 'images/enemy-bug.png';
+    this.speed = randomSpeed[(Math.floor(Math.random() * randomSpeed.length))] + 100;
+    this.width = 25;
+    this.height = 25;
+
+    // Variables applied to each of our instances go here,
+    // we've provided one for you to get started
+    // The image/sprite for our enemies, this uses
+    // a helper we've provided to easily load images
+
+};
+// Update the enemy's position, required method for game
+// Parameter: dt, a time delta between ticks
+
+Enemy.prototype.update = function(dt) {
+    // You should multiply any movement by the dt parameter
+    // which will ensure the game runs at the same speed for
+    // all computers. 
+    //  When the bug reaches the width of the screen at 505 start it
+    // over again 100 pixels off the screen. 
+    if (this.x < 505) {
+        this.x += this.speed * dt;
+        if (this.x > 505) {
+            this.x = -100;
+        }
+    }
+
+};
+
+
+
+// Draw the enemy on the screen, required method for game
+Enemy.prototype.render = function(now) {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+
+};
+
 
 
 
@@ -15,67 +59,21 @@ var lives = 3;
 
 
 
-// Enemies our player must avoid
-var Enemy = function(x, y) {
-    this.x = x;
-    this.y = y;
-    this.sprite = 'images/enemy-bug.png';
-    enemySpeeds = [200, 300, 400];
-    this.speed = enemySpeeds[(Math.floor(Math.random() * enemySpeeds.length))] + 100;
-    this.width = 25;
-    this.height = 25;
-    
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
-     
-};
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
-
-Enemy.prototype.update = function(dt) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.  
-         if (this.x < 505) {
-            this.x += this.speed*dt;
-          if (this.x > 505) {
-            this.x = - 100;
-          }      
-    }
-        
-}
-
-
-
-// Draw the enemy on the screen, required method for game
-Enemy.prototype.render = function(now) {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y); 
-    
-};
-
-
-
-
-
-
-
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method. 
-
 var allEnemies = [];
 
- (function createEnemies() {
+(function createEnemies() {
     allEnemies.push(new Enemy(-100, 60));
     allEnemies.push(new Enemy(-200, 140));
     allEnemies.push(new Enemy(-150, 225));
     allEnemies.push(new Enemy(-500, 225));
 
-    
+
 }());
 
+
+// Now write your own player class
+// This class requires an update(), render() and
+// a handleInput() method. 
 
 var Player = function(x, y) {
     this.x = playerStartx;
@@ -86,28 +84,28 @@ var Player = function(x, y) {
 
 };
 
- 
 
 
-Player.prototype.reset = function(x,y) {
+
+Player.prototype.reset = function(x, y) {
     this.x = playerStartx;
     this.y = playerStarty;
-    
-    
-}
 
-Player.prototype.update = function(dt) {  
-    
+
+};
+
+Player.prototype.update = function(dt) {
+
     if (this.y <= -1) {
         checkCollisions();
         this.reset();
         score++;
-            if (score === 3) {
-                alert("You got 3 in a row! Congratulations!");
-                lives = 3;
-                score = 0;
-                this.reset();
-                }
+        if (score === 3) {
+            alert("You got 3 in a row! Congratulations!");
+            lives = 3;
+            score = 0;
+            this.reset();
+        }
     }
     if (lives === 0) {
         alert("You lose! Try again!");
@@ -116,61 +114,87 @@ Player.prototype.update = function(dt) {
         this.reset();
 
     }
-     
+
 };
 
 
 Player.prototype.handleInput = function(direction) {
-      if (direction === 'left' && this.x > 25) {
+    if (direction === 'left' && this.x > 25) {
         this.x -= 100;
-            }
-      if (direction === 'right' && this.x < 400) {
+    }
+    if (direction === 'right' && this.x < 400) {
         this.x += 100;
+        if (direction === 'right' && this.x === 400 && this.y === 160) {
+            this.x = 300;
+
+        }
+
     }
-      if (direction === 'up') {
+
+
+
+    if (direction === 'up') {
         this.y -= 80;
+        if (direction === 'up' && this.x === 400 && this.y === 160) {
+            this.y = 240;
+        }
     }
-      if (direction === 'down' && this.y < 400)  {
+
+
+    if (direction === 'down' && this.y < 400) {
         this.y += 80;
+        if (direction === 'down' && this.x === 400 && this.y === 160) {
+            this.y = 80;
+        }
     }
-}
+
+    console.log(this.x, this.y);
+};
+
+
 
 Player.prototype.render = function() {
     drawScore();
     drawLives();
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    ctx.drawImage(Resources.get('images/rock.png'), 400, 140);
+
 
 };
 
 
 
-var player = new Player(playerStartx,playerStarty);
-    
+
+var player = new Player(playerStartx, playerStarty);
 
 
- var checkCollisions = function() {
-        
 
-         for(var i = 0; i < allEnemies.length; i++) {
-            if (allEnemies[i].x < player.x + player.width &&
-                allEnemies[i].x + allEnemies[i].width > player.x &&
-                allEnemies[i].y < player.y + player.height &&
-                allEnemies[i].height + allEnemies[i].y > player.y) {
-                lives--;
-                score = 0;
-                player.reset(); 
+var checkCollisions = function() {
+
+
+    for (var i = 0; i < allEnemies.length; i++) {
+        if (allEnemies[i].x < player.x + player.width &&
+            allEnemies[i].x + allEnemies[i].width > player.x &&
+            allEnemies[i].y < player.y + player.height &&
+            allEnemies[i].height + allEnemies[i].y > player.y) {
+            lives--;
+            score = 0;
+            player.reset();
         }
-       
+
     }
-   }
+};
 
 
-   
+
+// These 2 functions will keep track of the score and player lives.
+
 function drawScore() {
     ctx.font = "20px Arial";
     ctx.fillStyle = "#fff";
     ctx.fillText("Score: " + score, 10, 70);
 }
+
 function drawLives() {
     ctx.font = "20px Arial";
     ctx.fillStyle = "#fff";
@@ -192,7 +216,6 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
-
 
 
 
